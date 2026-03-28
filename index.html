@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Resume Builder | All-in-One Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --dark: #0f172a;
+            --slate: #64748b;
+            --bg: #f1f5f9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            user-select: none; -webkit-user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg);
+            background-image: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%);
+            color: var(--dark);
+            padding-bottom: 120px;
+        }
+
+        nav { background: white; padding: 15px; display: flex; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e2e8f0; }
+        nav button { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--slate); padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.85rem; }
+        nav button.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+
+        .page { display: none; padding: 40px 20px; max-width: 1000px; margin: 0 auto; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: white; padding: 35px; border-radius: 20px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .full { grid-column: span 3; }
+        .span-2 { grid-column: span 2; }
+        .sec-head { grid-column: span 3; color: var(--primary); font-weight: 800; border-bottom: 2px solid #f1f5f9; padding: 20px 0 10px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1.5px; }
+        
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.65rem; font-weight: 800; color: var(--slate); text-transform: uppercase; }
+        input, textarea { padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.9rem; transition: 0.3s; user-select: text; }
+        input:focus { border-color: var(--primary); outline: none; background: white; }
+
+        /* Resume Preview */
+        .resume-paper { width: 210mm; min-height: 297mm; background: white; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; border: 1px solid #e2e8f0; box-shadow: 0 20px 50px rgba(0,0,0,0.1); font-size: 0.85rem; }
+        .r-side { background: var(--dark); color: white; padding: 30px; }
+        .r-main { padding: 40px; color: #1e293b; }
+        .r-header { grid-column: span 2; padding: 40px; background: #f8fafc; border-bottom: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        
+        .r-title { color: var(--primary); font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin: 20px 0 10px; text-transform: uppercase; font-size: 0.85rem; }
+        .pfp-circle { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; margin: 0 auto 20px; background: #334155; }
+        .pfp-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+        .item-box { margin-bottom: 15px; border-left: 2px solid #e2e8f0; padding-left: 15px; }
+        .item-name { font-weight: 800; color: var(--dark); }
+        .item-sub { color: var(--primary); font-weight: 700; font-size: 0.75rem; }
+
+        .action-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 2000; }
+        .float-btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        footer { text-align: center; padding: 50px; color: var(--slate); font-size: 0.8rem; }
+        #privacyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 450px; text-align: center; }
+
+        @media print {
+            nav, .action-bar, footer, #page1, #page3 { display: none !important; }
+            body { background: white; padding: 0; user-select: auto; }
+            .page { display: block !important; padding: 0; }
+            .resume-paper { box-shadow: none; border: none; width: 100%; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <nav>
+        <button onclick="setTab(1)" id="t1" class="active">1. Builder</button>
+        <button onclick="setTab(2)" id="t2">2. View Resume</button>
+        <button onclick="setTab(3)" id="t3">3. Contact</button>
+    </nav>
+
+    <div id="page1" class="page active">
+        <div class="card">
+            <h3 class="sec-head">🔹 Basic Info</h3>
+            <div class="input-group"><label>Photo</label><input type="file" onchange="upImg(event)"></div>
+            <div class="input-group"><label>Full Name</label><input type="text" id="iName" oninput="sync()"></div>
+            <div class="input-group"><label>Phone</label><input type="text" id="iPhone" oninput="sync()"></div>
+            <div class="input-group"><label>Email</label><input type="text" id="iEmail" oninput="sync()"></div>
+            <div class="input-group"><label>LinkedIn</label><input type="text" id="iLink" oninput="sync()"></div>
+            <div class="input-group"><label>Portfolio</label><input type="text" id="iPort" oninput="sync()"></div>
+
+            <h3 class="sec-head">🔹 Career Objective ⭐</h3>
+            <div class="input-group full"><textarea id="iObj" rows="3" oninput="sync()"></textarea></div>
+
+            <h3 class="sec-head">🔹 Education</h3>
+            <div class="input-group"><label>Degree (B.Tech / B.Sc)</label><input type="text" id="iDeg" oninput="sync()"></div>
+            <div class="input-group"><label>College Name</label><input type="text" id="iCol" oninput="sync()"></div>
+            <div class="input-group"><label>Year & CGPA</label><input type="text" id="iStats" oninput="sync()"></div>
+            <div class="input-group full"><label>Intermediate (College, Year, %)</label><input type="text" id="i12" oninput="sync()"></div>
+            <div class="input-group full"><label>SSC (School, Year, %)</label><input type="text" id="i10" oninput="sync()"></div>
+
+            <h3 class="sec-head">🔹 Skills</h3>
+            <div class="input-group full"><label>Technical Skills</label><input type="text" id="iSkT" oninput="sync()"></div>
+            <div class="input-group full"><label>Tools & Platforms</label><input type="text" id="iTools" oninput="sync()"></div>
+            <div class="input-group full"><label>Soft Skills</label><input type="text" id="iSkS" oninput="sync()"></div>
+
+            <h3 class="sec-head">🔹 Projects</h3>
+            <div class="input-group full"><label>Project 1 (Name, Tech, Impact)</label><textarea id="iP1" oninput="sync()"></textarea></div>
+            <div class="input-group full"><label>Project 2 (Name, Tech, Impact)</label><textarea id="iP2" oninput="sync()"></textarea></div>
+            <div class="input-group full"><label>Project 3 (Name, Tech, Impact)</label><textarea id="iP3" oninput="sync()"></textarea></div>
+
+            <h3 class="sec-head">🔹 Internship / Experience</h3>
+            <div class="input-group"><label>Role</label><input type="text" id="iExpRole" oninput="sync()"></div>
+            <div class="input-group"><label>Company</label><input type="text" id="iExpComp" oninput="sync()"></div>
+            <div class="input-group"><label>Duration</label><input type="text" id="iExpDur" oninput="sync()"></div>
+            <div class="input-group full"><label>Work you did</label><textarea id="iExpWork" rows="2" oninput="sync()"></textarea></div>
+
+            <h3 class="sec-head">🔹 More Details</h3>
+            <div class="input-group full"><label>Certifications</label><input type="text" id="iCert" oninput="sync()"></div>
+            <div class="input-group full"><label>Achievements</label><input type="text" id="iAch" oninput="sync()"></div>
+            <div class="input-group"><label>Languages ⭐</label><input type="text" id="iLang" oninput="sync()"></div>
+            <div class="input-group"><label>Date of Birth</label><input type="text" id="iDob" oninput="sync()"></div>
+            <div class="input-group"><label>Hobbies</label><input type="text" id="iHobby" oninput="sync()"></div>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="resume-paper">
+            <header class="r-header">
+                <div><h1 id="oName"></h1><p id="oContact" style="color:var(--primary); font-weight:700;"></p></div>
+                <div style="text-align:right; font-size:0.7rem; color:var(--slate);"><p id="oLink"></p><p id="oPort"></p></div>
+            </header>
+            <aside class="r-side">
+                <div class="pfp-circle"><img id="oImg" src="" alt=""></div>
+                <div class="r-title" style="color:white; border-color:rgba(255,255,255,0.1);">Technical Skills</div>
+                <p id="oSkT" style="font-size:0.75rem; margin-bottom:15px;"></p>
+                <div class="r-title" style="color:white; border-color:rgba(255,255,255,0.1);">Tools</div>
+                <p id="oTools" style="font-size:0.75rem; margin-bottom:15px;"></p>
+                <div class="r-title" style="color:white; border-color:rgba(255,255,255,0.1);">Soft Skills</div>
+                <p id="oSkS" style="font-size:0.75rem; margin-bottom:15px;"></p>
+                <div class="r-title" style="color:white; border-color:rgba(255,255,255,0.1);">Languages</div>
+                <p id="oLang" style="font-size:0.75rem;"></p>
+            </aside>
+            <main class="r-main">
+                <div class="r-title">Career Objective</div>
+                <p id="oObj" style="font-size:0.8rem; line-height:1.5;"></p>
+
+                <div class="r-title">Projects</div>
+                <p id="oP1" style="font-size:0.8rem; margin-bottom:8px;"></p>
+                <p id="oP2" style="font-size:0.8rem; margin-bottom:8px;"></p>
+                <p id="oP3" style="font-size:0.8rem;"></p>
+
+                <div class="r-title">Internship</div>
+                <div class="item-box">
+                    <p class="item-name" id="oExpRole"></p>
+                    <p class="item-sub"><span id="oExpComp"></span> | <span id="oExpDur"></span></p>
+                    <p id="oExpWork" style="font-size:0.8rem; margin-top:5px;"></p>
+                </div>
+
+                <div class="r-title">Education</div>
+                <p id="oEd" style="font-weight:700;"></p>
+                <p id="o12" style="font-size:0.75rem; color:var(--slate);"></p>
+                <p id="o10" style="font-size:0.75rem; color:var(--slate);"></p>
+
+                <div class="r-title">Certifications & Achievements</div>
+                <p id="oCert" style="font-size:0.8rem; margin-bottom:5px;"></p>
+                <p id="oAch" style="font-size:0.8rem;"></p>
+            </main>
+        </div>
+    </div>
+
+    <div id="page3" class="page">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div class="card full" style="text-align:center;">
+                <h3 style="color:var(--primary);">Contact Links</h3>
+                <p>Update your profile to see links here.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button class="float-btn" style="background:#10b981" onclick="save()">💾 SAVE DATA</button>
+        <button class="float-btn" style="background:var(--primary)" onclick="window.print()">🖨️ PDF EXPORT</button>
+    </div>
+
+    <footer>
+        <p>Created by <b>Your Name</b></p>
+        <p style="margin-top:10px;">This project is given by the <b>Gemini AI</b> to me</p>
+        <p style="margin-top:10px;"><a href="#" onclick="toggleModal(true)">Privacy & Terms</a></p>
+    </footer>
+
+    <div id="privacyModal">
+        <div class="modal-content">
+            <h3>🔒 Security Notice</h3>
+            <p style="font-size:0.9rem; color:var(--slate); margin:15px 0;">All data entered here is stored **locally** on your device. We do not use servers to store your personal information.</p>
+            <button class="float-btn" style="background:var(--primary); width:100%" onclick="toggleModal(false)">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Security Lock
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
+                return false;
+            }
+        };
+
+        function toggleModal(s) { document.getElementById('privacyModal').style.display = s ? 'flex' : 'none'; }
+        function setTab(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('page'+n).classList.add('active');
+            document.getElementById('t'+n).classList.add('active');
+        }
+
+        function upImg(e) {
+            const reader = new FileReader();
+            reader.onload = () => { document.getElementById('oImg').src = reader.result; localStorage.setItem('res_pfp_new', reader.result); };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        function sync() {
+            const get = (id) => document.getElementById(id).value;
+            document.getElementById('oName').innerText = get('iName') || 'FULL NAME';
+            document.getElementById('oContact').innerText = get('iPhone') + ' | ' + get('iEmail');
+            document.getElementById('oLink').innerText = get('iLink');
+            document.getElementById('oPort').innerText = get('iPort');
+            document.getElementById('oObj').innerText = get('iObj');
+            document.getElementById('oEd').innerText = get('iDeg') + ' | ' + get('iCol') + ' (' + get('iStats') + ')';
+            document.getElementById('o12').innerText = '12th: ' + get('i12');
+            document.getElementById('o10').innerText = '10th: ' + get('i10');
+            document.getElementById('oSkT').innerText = get('iSkT');
+            document.getElementById('oTools').innerText = get('iTools');
+            document.getElementById('oSkS').innerText = get('iSkS');
+            document.getElementById('oP1').innerText = get('iP1');
+            document.getElementById('oP2').innerText = get('iP2');
+            document.getElementById('oP3').innerText = get('iP3');
+            document.getElementById('oExpRole').innerText = get('iExpRole');
+            document.getElementById('oExpComp').innerText = get('iExpComp');
+            document.getElementById('oExpDur').innerText = get('iExpDur');
+            document.getElementById('oExpWork').innerText = get('iExpWork');
+            document.getElementById('oCert').innerText = 'Certifications: ' + get('iCert');
+            document.getElementById('oAch').innerText = 'Achievements: ' + get('iAch');
+            document.getElementById('oLang').innerText = get('iLang');
+        }
+
+        function save() {
+            const data = {};
+            document.querySelectorAll('input, textarea').forEach(i => data[i.id] = i.value);
+            localStorage.setItem('res_full_data', JSON.stringify(data));
+            alert('Saved to Browser!');
+        }
+
+        window.onload = () => {
+            const saved = localStorage.getItem('res_full_data');
+            if(saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = data[k]; });
+                sync();
+            }
+            if(localStorage.getItem('res_pfp_new')) document.getElementById('oImg').src = localStorage.getItem('res_pfp_new');
+        }
+    </script>
+</body>
+</html>
